@@ -16,25 +16,26 @@
 #######################################
 # Build the preliminary image
 #######################################
-FROM node:12-alpine as buildImg
+FROM registry.access.redhat.com/ubi8/nodejs-16 as buildImg
 
-RUN apk update
-RUN apk --no-cache add python2 make g++
+# USER root
+# RUN dnf -y update
+# RUN dnf -y install python2 make g++
 
-USER node
-WORKDIR /home/node
+USER 1001:0
+WORKDIR /home/app
 
-COPY --chown=node . /home/node
-RUN npm install --production --loglevel=warn
+COPY --chown=1001:0 . /home/app
+RUN npm install --production --loglevel=warn --legacy-peer-deps
 
 
 #######################################
 # Build the production image
 #######################################
-FROM node:12-alpine
+FROM registry.access.redhat.com/ubi8/nodejs-16-minimal
 
-USER node
-WORKDIR /home/node
+USER 1001:0
+WORKDIR /home/app
 
 RUN export BUILD_TIME=`date '+%Y-%m-%d %H:%M:%S'`
 ARG BUILD_TIME
@@ -42,7 +43,7 @@ ENV BUILD_TIME=${BUILD_TIME}
 ARG BUILD_ID
 ENV BUILD_ID=${BUILD_ID}
 
-COPY --chown=node --from=buildImg /home/node /home/node
+COPY --chown=1001:0 --from=buildImg /home/app /home/app
 
 EXPOSE 3333
 CMD ["npm", "start"]
