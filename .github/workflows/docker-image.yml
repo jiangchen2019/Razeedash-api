@@ -9,7 +9,6 @@ on:
 env:
   IMAGE_REGISTRY: quay.io/chenj
   VERSION: 1.5.2
-  BUILD_TIME: `date '+%Y-%m-%d %H:%M:%S'`
   TAG: ${VERSION}-${GITHUB_RUN_NUMBER}
 
 jobs:
@@ -20,6 +19,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - run: export BUILD_TIME=`date '+%Y-%m-%d %H:%M:%S'`
     - name: Build the Docker image
       run: docker build . --file Dockerfile.ubi --build-arg BUILD_TIME="$BUILD_TIME" --build-arg BUILD_ID="${TAG}" --tag ${IMAGE_REGISTRY}/razeedash-api:${TAG} 
     - name: Login to Docker Hub
