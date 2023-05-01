@@ -7,8 +7,8 @@ on:
     branches: [ "master" ]
 
 env:
-  IMAGE_REGISTRY: quay.io/chenj
-  VERSION: 1.5.2
+  IMAGE_REGISTRY: "quay.io/chenj"
+  VERSION: "1.5.2"
   TAG: ${VERSION}-${GITHUB_RUN_NUMBER}
 
 jobs:
