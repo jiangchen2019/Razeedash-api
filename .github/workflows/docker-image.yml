@@ -20,6 +20,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: export BUILD_TIME=`date '+%Y-%m-%d %H:%M:%S'`
+    - run: echo ${TAG}
+    - run: echo ${VERSION}
+    - run: echo ${GITHUB_RUN_NUMBER}
     - name: Build the Docker image
       run: docker build . --file Dockerfile.ubi --build-arg BUILD_TIME="$BUILD_TIME" --build-arg BUILD_ID="${TAG}" --tag ${IMAGE_REGISTRY}/razeedash-api:${TAG} 
     - name: Login to Docker Hub
