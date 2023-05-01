@@ -7,9 +7,8 @@ on:
     branches: [ "master" ]
 
 env:
-  IMAGE_REGISTRY: "quay.io/chenj"
-  VERSION: "1.5.2"
-  TAG: ${VERSION}-${GITHUB_RUN_NUMBER}
+  IMAGE_REGISTRY: quay.io/chenj
+  VERSION: 1.5.2
 
 jobs:
 
@@ -19,10 +18,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: export BUILD_TIME=`date '+%Y-%m-%d %H:%M:%S'`
-    - run: echo ${TAG}
-    - run: echo ${VERSION}
-    - run: echo ${GITHUB_RUN_NUMBER}
+    - id: set up
+      name: set up env
+      run: |-
+        export BUILD_TIME=`date '+%Y-%m-%d %H:%M:%S'`
+        export TAG=${VERSION}-${GITHUB_RUN_NUMBER}
     - name: Build the Docker image
       run: docker build . --file Dockerfile.ubi --build-arg BUILD_TIME="$BUILD_TIME" --build-arg BUILD_ID="${TAG}" --tag ${IMAGE_REGISTRY}/razeedash-api:${TAG} 
     - name: Login to Docker Hub
