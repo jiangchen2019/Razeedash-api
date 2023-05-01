@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  IMAGE_REGISTRY: quay.io/chenj
+  VERSION: 1.5.2
+  BUILD_TIME: `date '+%Y-%m-%d %H:%M:%S'`
+  TAG: ${VERSION}-${GITHUB_RUN_NUMBER}
+
 jobs:
 
   build:
@@ -15,12 +21,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile.ubi --tag quay.io/chenj/razeedash-api:1.5.1
+      run: docker build . --file Dockerfile.ubi --build-arg BUILD_TIME="$BUILD_TIME" --build-arg BUILD_ID="${TAG}" --tag ${IMAGE_REGISTRY}/razeedash-api:${TAG} 
     - name: Login to Docker Hub
       uses: docker/login-action@v1
       with:
-        registry: quay.io/chenj
+        registry: ${IMAGE_REGISTRY}
         username: ${{secrets['quayUser']}}
         password: ${{secrets['quayPassword']}}  
     - name: Push Docker Image
-      run: docker push quay.io/chenj/razeedash-api:1.5.1
+      run: docker push ${IMAGE_REGISTRY}/razeedash-api:${TAG}
