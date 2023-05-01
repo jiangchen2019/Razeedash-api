@@ -18,8 +18,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - id: set up
-      name: set up env
+    - name: set up env
       run: |-
         export BUILD_TIME=`date '+%Y-%m-%d %H:%M:%S'`
         export TAG=${VERSION}-${GITHUB_RUN_NUMBER}
